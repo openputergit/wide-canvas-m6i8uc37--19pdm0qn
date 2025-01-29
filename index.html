@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brutalist Job Tracker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background: #f0f0f0;
+        }
+        .neu-brutal {
+            border: 3px solid #000;
+            box-shadow: 4px 4px 0 #000;
+            transition: all 0.2s ease;
+        }
+        .neu-brutal:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0 #000;
+        }
+        .modal {
+            transition: opacity 0.25s ease;
+        }
+        .status-badge {
+            border: 2px solid #000;
+            padding: 2px 8px;
+            font-weight: bold;
+        }
+        table th, table td {
+            border: 1px solid #000;
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+    <div class="max-w-7xl mx-auto">
+        <!-- Header -->
+        <div class="mb-8">
+            <h1 class="text-4xl font-bold mb-6 neu-brutal bg-yellow-300 p-4 inline-block">Job Application Tracker</h1>
+            
+            <!-- Add New Button -->
+            <button onclick="showModal()" class="neu-brutal bg-green-400 px-6 py-3 text-lg font-bold flex items-center gap-2">
+                <i class="bi bi-plus-circle-fill"></i>
+                Add New Application
+            </button>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+            <div class="neu-brutal bg-blue-300 p-4">
+                <h3 class="font-bold">Total Applications</h3>
+                <p class="text-2xl font-bold" id="totalApps">0</p>
+            </div>
+            <div class="neu-brutal bg-green-300 p-4">
+                <h3 class="font-bold">In Progress</h3>
+                <p class="text-2xl font-bold" id="inProgress">0</p>
+            </div>
+            <div class="neu-brutal bg-red-300 p-4">
+                <h3 class="font-bold">Rejected</h3>
+                <p class="text-2xl font-bold" id="rejected">0</p>
+            </div>
+            <div class="neu-brutal bg-purple-300 p-4">
+                <h3 class="font-bold">Offers</h3>
+                <p class="text-2xl font-bold" id="offers">0</p>
+            </div>
+        </div>
+
+        <!-- Applications Table -->
+        <div class="neu-brutal bg-white p-4 mb-8 overflow-x-auto">
+            <table class="w-full">
+                <thead>
+                    <tr class="bg-gray-100">
+                        <th class="p-3">Company</th>
+                        <th class="p-3">Status</th>
+                        <th class="p-3">Assessment</th>
+                        <th class="p-3">Type</th>
+                        <th class="p-3">Role</th>
+                        <th class="p-3">Deadline</th>
+                        <th class="p-3">Applied On</th>
+                        <th class="p-3">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="applicationTable"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div id="modal" class="modal opacity-0 pointer-events-none fixed w-full h-full top-0 left-0 flex items-center justify-center z-50">
+        <div class="absolute w-full h-full bg-black opacity-50"></div>
+        
+        <div class="neu-brutal bg-white w-11/12 md:max-w-xl mx-auto z-50 p-6">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold">New Application</h2>
+                <button onclick="closeModal()" class="text-2xl">&times;</button>
+            </div>
+
+            <form id="applicationForm" class="space-y-4">
+                <div>
+                    <label class="block font-bold mb-2">Company Name</label>
+                    <input type="text" name="company" class="neu-brutal w-full p-2" required>
+                </div>
+                <div>
+                    <label class="block font-bold mb-2">Status</label>
+                    <select name="status" class="neu-brutal w-full p-2">
+                        <option value="Ready to Apply">Ready to Apply</option>
+                        <option value="Applied">Applied</option>
+                        <option value="Assessment">Assessment</option>
+                        <option value="Interview">Interview</option>
+                        <option value="Offer">Offer</option>
+                        <option value="Rejected">Rejected</option>
+                    </select>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block font-bold mb-2">Type</label>
+                        <select name="type" class="neu-brutal w-full p-2">
+                            <option value="Full-time">Full-time</option>
+                            <option value="Part-time">Part-time</option>
+                            <option value="Internship">Internship</option>
+                            <option value="Contract">Contract</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-bold mb-2">Role</label>
+                        <input type="text" name="role" class="neu-brutal w-full p-2" required>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block font-bold mb-2">Deadline</label>
+                        <input type="date" name="deadline" class="neu-brutal w-full p-2">
+                    </div>
+                    <div>
+                        <label class="block font-bold mb-2">Resume</label>
+                        <input type="file" name="resume" accept=".pdf,.doc,.docx" class="neu-brutal w-full p-2">
+                    </div>
+                </div>
+                
+                <button type="submit" class="neu-brutal bg-blue-400 w-full p-3 font-bold mt-6">
+                    Save Application
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let applications = [];
+
+        function showModal() {
+            document.getElementById('modal').classList.remove('opacity-0', 'pointer-events-none');
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.add('opacity-0', 'pointer-events-none');
+        }
+
+        function updateStatus(id) {
+            const newStatus = document.getElementById(`status-${id}`).value;
+            applications[id].status = newStatus;
+            updateTable();
+            updateStats();
+        }
+
+        function updateStats() {
+            document.getElementById('totalApps').textContent = applications.length;
+            document.getElementById('inProgress').textContent = 
+                applications.filter(app => ['Applied', 'Assessment', 'Interview'].includes(app.status)).length;
+            document.getElementById('rejected').textContent = 
+                applications.filter(app => app.status === 'Rejected').length;
+            document.getElementById('offers').textContent = 
+                applications.filter(app => app.status === 'Offer').length;
+        }
+
+        function updateTable() {
+            const tableBody = document.getElementById('applicationTable');
+            tableBody.innerHTML = '';
+            
+            applications.forEach((app, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class="p-3">${app.company}</td>
+                    <td class="p-3">
+                        <select id="status-${index}" onchange="updateStatus(${index})" 
+                                class="neu-brutal p-1 ${getStatusColor(app.status)}">
+                            <option value="Ready to Apply" ${app.status === 'Ready to Apply' ? 'selected' : ''}>Ready to Apply</option>
+                            <option value="Applied" ${app.status === 'Applied' ? 'selected' : ''}>Applied</option>
+                            <option value="Assessment" ${app.status === 'Assessment' ? 'selected' : ''}>Assessment</option>
+                            <option value="Interview" ${app.status === 'Interview' ? 'selected' : ''}>Interview</option>
+                            <option value="Offer" ${app.status === 'Offer' ? 'selected' : ''}>Offer</option>
+                            <option value="Rejected" ${app.status === 'Rejected' ? 'selected' : ''}>Rejected</option>
+                        </select>
+                    </td>
+                    <td class="p-3">Pending</td>
+                    <td class="p-3">${app.type}</td>
+                    <td class="p-3">${app.role}</td>
+                    <td class="p-3">${app.deadline}</td>
+                    <td class="p-3">${app.appliedOn}</td>
+                    <td class="p-3">
+                        <button class="neu-brutal bg-red-400 p-1" onclick="deleteApplication(${index})">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        function getStatusColor(status) {
+            const colors = {
+                'Ready to Apply': 'bg-yellow-200',
+                'Applied': 'bg-blue-200',
+                'Assessment': 'bg-purple-200',
+                'Interview': 'bg-green-200',
+                'Offer': 'bg-green-400',
+                'Rejected': 'bg-red-200'
+            };
+            return colors[status] || 'bg-gray-200';
+        }
+
+        function deleteApplication(index) {
+            applications.splice(index, 1);
+            updateTable();
+            updateStats();
+        }
+
+        document.getElementById('applicationForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const application = {
+                company: formData.get('company'),
+                status: formData.get('status'),
+                type: formData.get('type'),
+                role: formData.get('role'),
+                deadline: formData.get('deadline'),
+                resume: formData.get('resume').name,
+                appliedOn: new Date().toLocaleDateString()
+            };
+            applications.push(application);
+            updateTable();
+            updateStats();
+            closeModal();
+            this.reset();
+        });
+
+        // Initialize with some sample data
+        applications = [
+            {
+                company: "Tech Corp",
+                status: "Applied",
+                type: "Full-time",
+                role: "Frontend Developer",
+                deadline: "2023-12-31",
+                resume: "resume.pdf",
+                appliedOn: "11/20/2023"
+            }
+        ];
+        updateTable();
+        updateStats();
+    </script>
+<script>document.body.addEventListener('wheel', e => { if (!e.ctrlKey) return; e.preventDefault(); return }, { passive: false })</script>
+	</body>
+</html>
